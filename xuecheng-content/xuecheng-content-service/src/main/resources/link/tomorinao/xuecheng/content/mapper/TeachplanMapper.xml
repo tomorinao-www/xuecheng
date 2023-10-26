@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="link.tomorinao.xuecheng.content.mapper.TeachplanMapper">
+
+    <resultMap id="treeNodesResultMap" type="link.tomorinao.xuecheng.content.model.dto.TeachplanDto">
+        <id column="t1_id" property="id"/>
+        <result column="t1_pname" property="pname"/>
+        <result column="t1_parentid" property="parentid"/>
+        <result column="t1_grade" property="grade"/>
+        <result column="t1_mediaType" property="mediaType"/>
+        <result column="t1_startTime" property="startTime"/>
+        <result column="t1_endTime" property="endTime"/>
+        <result column="t1_orderby" property="orderby"/>
+        <result column="t1_courseId" property="courseId"/>
+        <result column="t1_coursePubId" property="coursePubId"/>
+        <collection property="teachPlanTreeNodes"
+                    ofType="link.tomorinao.xuecheng.content.model.dto.TeachplanDto">
+            <id column="t2_id" property="id"/>
+            <result column="t2_pname" property="pname"/>
+            <result column="t2_parentid" property="parentid"/>
+            <result column="t2_grade" property="grade"/>
+            <result column="t2_mediaType" property="mediaType"/>
+            <result column="t2_startTime" property="startTime"/>
+            <result column="t2_endTime" property="endTime"/>
+            <result column="t2_orderby" property="orderby"/>
+            <result column="t2_courseId" property="courseId"/>
+            <result column="t2_coursePubId" property="coursePubId"/>
+            <association property="teachplanMedia"
+                         javaType="link.tomorinao.xuecheng.content.model.po.TeachplanMedia">
+                <id column="teachplanMediaId" property="id"/>
+                <result column="mediaId" property="mediaId"/>
+                <result column="mediaFileName" property="mediaFilename"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="selectTreeNodes" parameterType="long" resultMap="treeNodesResultMap">
+        select t1.id             t1_id,
+               t1.pname          t1_pname,
+               t1.parentid       t1_parentid,
+               t1.grade          t1_grade,
+               t1.media_type     t1_mediaType,
+               t1.start_time     t1_startTime,
+               t1.end_time       t1_endTime,
+               t1.orderby        t1_orderby,
+               t1.course_id      t1_courseId,
+               t1.course_pub_id  t1_coursePubId,
+               t2.id             t2_id,
+               t2.pname          t2_pname,
+               t2.parentid       t2_parentid,
+               t2.grade          t2_grade,
+               t2.media_type     t2_mediaType,
+               t2.start_time     t2_startTime,
+               t2.end_time       t2_endTime,
+               t2.orderby        t2_orderby,
+               t2.course_id      t2_courseId,
+               t2.course_pub_id  t2_coursePubId,
+               tm.id             teachplanMediaId,
+               tm.media_id       mediaId,
+               tm.media_filename mediaFileName
+        from teachplan t1
+                 left join teachplan t2
+                            on t2.parentid = t1.id
+                 left join teachplan_media tm
+                           on t2.id = tm.teachplan_id
+        where t1.parentid = 0
+          and t1.course_id = #{id}
+        order by t1.orderby, t2.orderby
+    </select>
+
+    <select id="selectMaxOrderby" resultType="java.lang.Integer">
+        select max(orderby) max_orderby
+        from teachplan
+        where course_id = #{courseId}
+          and parentid = #{parentid}
+    </select>
+</mapper>

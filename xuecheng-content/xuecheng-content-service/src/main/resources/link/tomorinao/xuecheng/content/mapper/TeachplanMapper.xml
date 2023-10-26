@@ -74,4 +74,22 @@
         where course_id = #{courseId}
           and parentid = #{parentid}
     </select>
+    <select id="selectUpOne" resultType="link.tomorinao.xuecheng.content.model.po.Teachplan">
+        select *
+        from teachplan
+        where course_id = #{courseId}
+          and parentid = #{parentid}
+          and #{orderby} > orderby
+        order by orderby desc
+        limit 1
+    </select>
+    <select id="selectDownOne" resultType="link.tomorinao.xuecheng.content.model.po.Teachplan">
+        select *
+        from teachplan
+        where course_id = #{courseId}
+          and parentid = #{parentid}
+          and orderby > #{orderby}
+        order by orderby
+        limit 1
+    </select>
 </mapper>

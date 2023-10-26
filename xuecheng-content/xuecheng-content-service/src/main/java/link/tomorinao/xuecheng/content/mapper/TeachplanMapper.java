@@ -19,4 +19,8 @@ public interface TeachplanMapper extends BaseMapper<Teachplan> {
     List<TeachplanDto> selectTreeNodes(Long id);
 
     Integer selectMaxOrderby(Teachplan teachplan);
+
+    Teachplan selectUpOne(Teachplan teachplan);
+
+    Teachplan selectDownOne(Teachplan po);
 }

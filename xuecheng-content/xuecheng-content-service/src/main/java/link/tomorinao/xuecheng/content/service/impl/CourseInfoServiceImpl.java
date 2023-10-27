@@ -1,12 +1,17 @@
 package link.tomorinao.xuecheng.content.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import link.tomorinao.xuecheng.base.exception.XueChengException;
 import link.tomorinao.xuecheng.content.mapper.CourseCategoryMapper;
 import link.tomorinao.xuecheng.content.mapper.CourseInfoMapper;
+import link.tomorinao.xuecheng.content.mapper.CourseTeacherMapper;
+import link.tomorinao.xuecheng.content.mapper.TeachplanMapper;
 import link.tomorinao.xuecheng.content.model.dto.CourseInfoDto;
 import link.tomorinao.xuecheng.content.model.po.CourseCategory;
 import link.tomorinao.xuecheng.content.model.po.CourseInfo;
+import link.tomorinao.xuecheng.content.model.po.CourseTeacher;
+import link.tomorinao.xuecheng.content.model.po.Teachplan;
 import link.tomorinao.xuecheng.content.service.ICourseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,11 @@ public class CourseInfoServiceImpl implements ICourseInfoService {
     @Resource
     private CourseCategoryMapper courseCategoryMapper;
 
+    @Resource
+    private CourseTeacherMapper courseTeacherMapper;
+
+    @Resource
+    private TeachplanMapper teachplanMapper;
 
     @Override
     public CourseInfoDto getById(Long id) {
@@ -29,13 +39,14 @@ public class CourseInfoServiceImpl implements ICourseInfoService {
         return po2dto(po);
     }
 
+
     @Transactional
     @Override
-    public Long add(Long companyId, CourseInfoDto add_dto) {
+    public Long add(Long companyId, CourseInfoDto dto) {
         // 1.参数校验
-        valid(add_dto);
+        valid(dto);
         // 2.dto转po
-        CourseInfo po = dto2po(companyId, add_dto);
+        CourseInfo po = dto2po(companyId, dto);
         // 3.写数据库
         int i = courseInfoMapper.insert(po);
         if (i <= 0) {
@@ -48,11 +59,12 @@ public class CourseInfoServiceImpl implements ICourseInfoService {
     @Override
     public Long updateById(Long companyId, CourseInfoDto dto) {
         // 1.鉴权 - 只能修改本机构的课程
-        authenticate(companyId, dto);
+        CourseInfo po = courseInfoMapper.selectById(dto.getId());
+        authenticate(companyId, po);
         // 2.参数校验
         valid(dto);
         // 3.dto转po
-        CourseInfo po = dto2po(companyId, dto);
+        BeanUtils.copyPropertiesIgnoreNull(dto, po);
         // 4.写数据库
         int i = courseInfoMapper.updateById(po);
         if (i <= 0) {
@@ -61,10 +73,27 @@ public class CourseInfoServiceImpl implements ICourseInfoService {
         return po.getId();
     }
 
-    private void authenticate(Long companyId, CourseInfoDto dto) {
-        CourseInfo po = courseInfoMapper.selectById(dto.getId());
+    @Transactional
+    @Override
+    public void deleteById(Long companyId, Long id) {
+        // 鉴权
+        CourseInfo courseInfoPO = courseInfoMapper.selectById(id);
+        authenticate(companyId, courseInfoPO);
+        // 删除章节
+        LambdaQueryWrapper<Teachplan> planWrapper = new LambdaQueryWrapper<>();
+        planWrapper.eq(Teachplan::getCourseId, id);
+        teachplanMapper.delete(planWrapper);
+        // 删除教师
+        LambdaQueryWrapper<CourseTeacher> teacherWrapper = new LambdaQueryWrapper<>();
+        teacherWrapper.eq(CourseTeacher::getCourseId, id);
+        courseTeacherMapper.delete(teacherWrapper);
+        // 删除课程信息
+        courseInfoMapper.deleteById(id);
+    }
+
+    private void authenticate(Long companyId, CourseInfo po) {
         if (!companyId.equals(po.getCompanyId())) {
-            XueChengException.cast("只能修改本机构的课程");
+            XueChengException.cast("只能操作本机构的课程");
         }
     }
 
@@ -82,7 +111,7 @@ public class CourseInfoServiceImpl implements ICourseInfoService {
 
     private CourseInfo dto2po(Long companyId, CourseInfoDto dto) {
         CourseInfo po = new CourseInfo();
-        // 复制相同名称的属性。可能会用null覆盖有值的属性。
+        // 复制相同名称的属性。忽略null
         BeanUtils.copyPropertiesIgnoreNull(dto, po);
         // 设置dto中没有的companyId
         po.setCompanyId(companyId);

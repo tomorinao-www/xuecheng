@@ -17,4 +17,6 @@ public interface ICourseInfoService {
     Long updateById(Long companyId, CourseInfoDto dto);
 
     CourseInfoDto getById(Long id);
+
+    void deleteById(Long companyId, Long id);
 }

@@ -31,5 +31,10 @@ public class CourseInfoController {
         Long id = iCourseInfoService.updateById(1232141425L, dto);
         return iCourseInfoService.getById(id);
     }
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id) {
+        Long companyId = 1232141425L;
+        iCourseInfoService.deleteById(companyId,id);
+    }
 
 }

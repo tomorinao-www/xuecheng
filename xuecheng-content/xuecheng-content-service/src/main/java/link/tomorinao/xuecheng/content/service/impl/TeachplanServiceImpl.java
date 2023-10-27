@@ -39,7 +39,6 @@ public class TeachplanServiceImpl implements ITeachplanService {
         Long id = dto.getId();
         if (id == null) {
             Teachplan po = dto2po(dto);
-            BeanUtils.copyPropertiesIgnoreNull(dto, po);
             teachplanMapper.insert(po);
         } else {
             Teachplan po = teachplanMapper.selectById(id);

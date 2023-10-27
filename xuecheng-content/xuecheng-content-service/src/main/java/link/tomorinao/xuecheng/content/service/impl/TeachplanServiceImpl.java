@@ -1,13 +1,10 @@
 package link.tomorinao.xuecheng.content.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
-import link.tomorinao.xuecheng.base.exception.XueChengException;
 import link.tomorinao.xuecheng.base.utils.BeanUtils;
 import link.tomorinao.xuecheng.content.mapper.TeachplanMapper;
 import link.tomorinao.xuecheng.content.model.dto.TeachplanDto;
-import link.tomorinao.xuecheng.content.model.po.CourseCategory;
 import link.tomorinao.xuecheng.content.model.po.Teachplan;
 import link.tomorinao.xuecheng.content.service.ITeachplanService;
 import lombok.extern.slf4j.Slf4j;
@@ -69,32 +66,27 @@ public class TeachplanServiceImpl implements ITeachplanService {
     public void moveup(Long id) {
         Teachplan po = teachplanMapper.selectById(id);
         Teachplan uppo = teachplanMapper.selectUpOne(po);
-        if (uppo == null) {
-            return;
-        }
-        int order = po.getOrderby();
-        int upOrder = uppo.getOrderby();
-        po.setOrderby(upOrder);
-        uppo.setOrderby(order);
-        teachplanMapper.updateById(po);
-        teachplanMapper.updateById(uppo);
+        exchangeOrderby(uppo, po);
     }
 
     @Override
     public void movedown(Long id) {
         Teachplan po = teachplanMapper.selectById(id);
         Teachplan downpo = teachplanMapper.selectDownOne(po);
-        if (downpo == null) {
-            return;
-        }
-        int order = po.getOrderby();
-        int upOrder = downpo.getOrderby();
-        po.setOrderby(upOrder);
-        downpo.setOrderby(order);
-        teachplanMapper.updateById(po);
-        teachplanMapper.updateById(downpo);
+        exchangeOrderby(downpo, po);
     }
 
+    private void exchangeOrderby(Teachplan po1, Teachplan po2) {
+        if (po1 == null || po2 == null) {
+            return;
+        }
+        int order1 = po1.getOrderby();
+        int order2 = po2.getOrderby();
+        po2.setOrderby(order1);
+        po1.setOrderby(order2);
+        teachplanMapper.updateById(po2);
+        teachplanMapper.updateById(po1);
+    }
     private Teachplan dto2po(TeachplanDto dto) {
         Teachplan po = new Teachplan();
         BeanUtils.copyPropertiesIgnoreNull(dto, po);

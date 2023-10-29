@@ -17,8 +17,10 @@
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
         <spring-cloud-context.version>4.0.4</spring-cloud-context.version>
         <mybatis.version>3.0.2</mybatis.version>
-        <spring-boot.version>3.1.4</spring-boot.version>
         <commons-lang3.version>3.13.0</commons-lang3.version>
+        <spring-boot.version>3.1.4</spring-boot.version>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
     </properties>
 
     <packaging>pom</packaging>
@@ -34,6 +36,20 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -1,0 +1,31 @@
+spring:
+  config:
+    import:
+      - nacos:content-api-dev.yaml
+#      - nacos:log-dev.yaml
+    activate:
+      on-profile: test
+  cloud:
+    nacos:
+      #      server-addr: nacos:8848 # nacos地址
+      server-addr: localhost:8848 # nacos地址
+      discovery:
+        namespace: dev
+        group: xuecheng
+      config:
+        # 配置文件优先级：nacos:config -> nacos:extension-configs -> nacos:shared-configs -> 本地配置文件
+        prefix: ${spring.application.name}
+        file-extension: yaml
+        namespace: dev
+        group: xuecheng
+
+        #        extension-configs:
+        #          - data-id: log-dev.yaml
+        #            group: xuecheng
+        #            refresh: true
+        shared-configs:
+          - data-id: log-dev.yaml
+            group: xuecheng
+            refresh: true
+
+

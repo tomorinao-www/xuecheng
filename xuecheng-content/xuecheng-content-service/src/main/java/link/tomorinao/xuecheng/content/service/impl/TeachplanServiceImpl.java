@@ -53,10 +53,11 @@ public class TeachplanServiceImpl implements ITeachplanService {
         Teachplan po = teachplanMapper.selectById(id);
         Long parentid = po.getParentid();
         // 一级章节，需要同时删除二级小节
-        LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Teachplan::getParentid, id);
-        int deletei = teachplanMapper.delete(wrapper);
-        log.info("删除返回deletei->{}", deletei);
+        if (parentid == 0) {
+            LambdaQueryWrapper<Teachplan> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Teachplan::getParentid, id);
+            teachplanMapper.delete(wrapper);
+        }
         teachplanMapper.deleteById(id);
     }
 
@@ -86,6 +87,7 @@ public class TeachplanServiceImpl implements ITeachplanService {
         teachplanMapper.updateById(po2);
         teachplanMapper.updateById(po1);
     }
+
     private Teachplan dto2po(TeachplanDto dto) {
         Teachplan po = new Teachplan();
         BeanUtils.copyPropertiesIgnoreNull(dto, po);

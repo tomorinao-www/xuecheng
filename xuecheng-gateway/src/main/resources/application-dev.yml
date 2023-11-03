@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      - nacos:content-api-dev.yaml
+      - nacos:gateway-dev.yaml
       - nacos:log-dev.yaml
     activate:
       on-profile: dev
@@ -18,11 +18,6 @@ spring:
         file-extension: yaml
         namespace: dev
         group: xuecheng
-
-        #        extension-configs:
-        #          - data-id: log-dev.yaml
-        #            group: xuecheng
-        #            refresh: true
         shared-configs:
           - data-id: log-dev.yaml
             group: xuecheng

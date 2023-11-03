@@ -1,0 +1,12 @@
+server:
+  port: 63040
+  servlet:
+    context-path: /content
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # url: jdbc:mysql://10.198.114.128:3306/xc_content
+    url: jdbc:mysql://localhost:3306/xc_content
+    username: "root"
+    password: "local"

@@ -29,7 +29,7 @@
                          javaType="link.tomorinao.xuecheng.content.model.po.TeachplanMedia">
                 <id column="teachplanMediaId" property="id"/>
                 <result column="mediaId" property="mediaId"/>
-                <result column="mediaFileName" property="mediaFilename"/>
+                <result column="mediaFilename" property="mediaFilename"/>
             </association>
         </collection>
     </resultMap>
@@ -57,7 +57,7 @@
                t2.course_pub_id  t2_coursePubId,
                tm.id             teachplanMediaId,
                tm.media_id       mediaId,
-               tm.media_filename mediaFileName
+               tm.media_filename mediaFilename
         from teachplan t1
                  left join teachplan t2
                             on t2.parentid = t1.id

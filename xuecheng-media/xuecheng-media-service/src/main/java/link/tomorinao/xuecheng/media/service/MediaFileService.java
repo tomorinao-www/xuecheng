@@ -2,12 +2,11 @@ package link.tomorinao.xuecheng.media.service;
 
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
+import link.tomorinao.xuecheng.base.model.RestResponse;
 import link.tomorinao.xuecheng.media.model.dto.QueryMediaParamsDto;
 import link.tomorinao.xuecheng.media.model.dto.UploadFileDto;
 import link.tomorinao.xuecheng.media.model.po.MediaFiles;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 /**
  * @author Mr.M
@@ -29,4 +28,25 @@ public interface MediaFileService {
 
 
     UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile) throws Exception;
+
+    /**
+     * 检查文件是否存在
+     *
+     * @param fileMd5 文件的md5
+     * @return
+     */
+    RestResponse<Boolean> checkFile(String fileMd5);
+
+    /**
+     * 检查分块是否存在
+     *
+     * @param fileMd5    文件的MD5
+     * @param chunkIndex 分块序号
+     * @return
+     */
+    RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex);
+
+    RestResponse<Boolean> uploadChunk(String fileMd5, int chunkIndex, MultipartFile file);
+
+    RestResponse<Boolean> mergeChunks(Long companyId, String fileMd5, String fileName, int chunkTotal, String etag);
 }

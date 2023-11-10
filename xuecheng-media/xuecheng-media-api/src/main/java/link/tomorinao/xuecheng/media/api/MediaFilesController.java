@@ -2,6 +2,7 @@ package link.tomorinao.xuecheng.media.api;
 
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
+import link.tomorinao.xuecheng.base.model.RestResponse;
 import link.tomorinao.xuecheng.media.model.dto.QueryMediaParamsDto;
 import link.tomorinao.xuecheng.media.model.dto.UploadFileDto;
 import link.tomorinao.xuecheng.media.model.po.MediaFiles;
@@ -9,6 +10,7 @@ import link.tomorinao.xuecheng.media.service.MediaFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,8 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class MediaFilesController {
 
 
+    private final MediaFileService mediaFileService;
+
     @Autowired
-    MediaFileService mediaFileService;
+    public MediaFilesController(MediaFileService mediaFileService) {
+        this.mediaFileService = mediaFileService;
+    }
 
 
     @PostMapping("/files")
@@ -39,4 +45,31 @@ public class MediaFilesController {
         return mediaFileService.uploadCourseFile(companyId, filedata);
     }
 
+
+    @PostMapping("/upload/checkfile")
+    public RestResponse<Boolean> checkFile(String fileMd5) {
+        return mediaFileService.checkFile(fileMd5);
+    }
+
+    @PostMapping("/upload/checkchunk")
+    public RestResponse<Boolean> checkChunk(String fileMd5,
+                                            int chunk) {
+        return mediaFileService.checkChunk(fileMd5, chunk);
+    }
+
+    @PostMapping("/upload/uploadchunk")
+    public RestResponse<Boolean> uploadChunk(MultipartFile file,
+                                             String fileMd5,
+                                             int chunk) {
+        return mediaFileService.uploadChunk(fileMd5, chunk, file);
+    }
+
+    @PostMapping("/upload/mergechunks")
+    public RestResponse<Boolean> mergeChunks(String fileMd5,
+                                    String fileName,
+                                    int chunkTotal,
+                                    String etag){
+        Long companyId = 1232141425L;
+        return mediaFileService.mergeChunks(companyId, fileMd5, fileName, chunkTotal, etag);
+    }
 }

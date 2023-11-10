@@ -1,0 +1,25 @@
+server:
+  servlet:
+    context-path: /media
+  port: 63050
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/xc_media
+    username: root
+    password: local
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+
+
+minio:
+  access-key: minioadmin
+  secret-key: minioadmin
+  endpoint: http://localhost:9000
+  bucket:
+    media: xc-media
+    video: xc-video
+    test: test-chunk

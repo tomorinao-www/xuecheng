@@ -17,5 +17,6 @@ public class MinioConfig {
     public static class Bucket {
         private String media;
         private String video;
+        private String test;
     }
 }

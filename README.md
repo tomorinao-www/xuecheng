@@ -21,7 +21,6 @@ https://www.bilibili.com/video/BV1j8411N7Bm
 使用apifox 公开文档
 https://xuecheng-tomorinao.apifox.cn
 
-
 ## 内容管理模块
 
 ### 合并了course_base表与course_market表为course_info表。
@@ -88,7 +87,7 @@ spring的BeanUtils.copyProperties()会把所有同名同类属性复制覆盖，
 ### 关于文件信息数据库表
 
 黑马使用md5值做主键，这不太好，
-且id与file_id字段都是md5，重复
+且id与file_id字段都是md5，重复（后面file_id优化为etag）
 
 黑马用md5进行文件去重，
 但是生成minio桶内文件路径时使用日期/yyyy/MM/dd/。
@@ -117,6 +116,7 @@ spring的BeanUtils.copyProperties()会把所有同名同类属性复制覆盖，
 静态内部类实现嵌套配置，简洁优雅
 
 ```java
+
 @ConfigurationProperties(prefix = "minio")
 @Data
 public class MinioConfig {
@@ -146,7 +146,6 @@ nacos完成配置刷新后，会发送一个RefreshScopeRefreshedEvent事件，
 
 nacos配置刷新，不会改变MinioConfig配置类实例的引用，而是修改它的属性，
 而我们保留了MinioConfig的引用，所以能够拿到更新后的MinioConfig
-
 
 ```java
 public class MinioUtil {
@@ -181,3 +180,58 @@ public class MinioUtil {
 其实，像数据库连接、tomcat服务端口这些配置，仅在程序启动时读取并进行初始化操作，
 nacos配置更新并不会引起数据库重新连接、端口重新开放等。
 
+### 优化：合并文件校验改用etag
+
+黑马校验分块合并文件，是服务器从minio下载整个文件，并计算md5来校验。
+这样做耗时、占用网络且没有必要。
+
+其实，minio有etag生成策略。
+
+小文件上传，etag就是md5的16进制表示。
+
+大文件分块上传，etag长这样：{sum_md5}-{num}
+
+减号前的sum_md5，是每块文件的md5拼接后再求md5hex；
+减号后的num，是分块的个数。
+
+直接用etag就可以校验大文件完整性，不需要再下载一遍。
+
+为了使用etag校验，需要修改前端项目，让前端计算etag并传给后端。
+
+在uploadtools.ts的主函数uploadByPieces中加入以下代码，并将其改为异步函数。
+在提交合并api mergeChunks调用中增加字段etag: etag
+
+```ts
+const blob2md5 = async blob => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            resolve(CryptoJS.MD5(CryptoJS.enc.Latin1.parse(reader.result)))
+        }
+        reader.onerror = reject
+        reader.readAsBinaryString(blob)
+    })
+}
+
+const calcEtag = async () => {
+    const view_uint8 = new Uint8Array(16 * chunkCount)
+    for (let i = 0; i < chunkCount; i++) {
+        let i_chunk = getChunkInfo(file, i, chunkSize)
+        let i_md5 = (await blob2md5(i_chunk)) as any
+        let i_md5hex = i_md5.toString()
+        for (let j = 0; j < 16; j++) {
+            const byteString = i_md5hex.substring(j * 2, j * 2 + 2) // 从字符串中截取两个字符
+            const byteValue = parseInt(byteString, 16) // 将两个字符解析为 16 进制数值
+            view_uint8[i * 16 + j] = byteValue // 存入 Uint8Array 视图
+        }
+    }
+    let etag_md5 = await blob2md5(new Blob([view_uint8.buffer]))
+    return `${etag_md5}-${chunkCount}`
+}
+const etag = await calcEtag()
+```
+
+这样后端就只需要拿到前端传的etag和minio的etag，对比一下就好啦~
+
+正好黑马有个file_id字段和主键md5hex重复，用它存etag。
+原始字段varchar(32)不够用，改成varchar(36)

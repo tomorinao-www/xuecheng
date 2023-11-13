@@ -1,6 +1,7 @@
 package link.tomorinao.xuecheng.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import link.tomorinao.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import link.tomorinao.xuecheng.content.model.dto.TeachplanDto;
 import link.tomorinao.xuecheng.content.model.po.Teachplan;
 
@@ -25,4 +26,6 @@ public interface ITeachplanService{
     void moveup(Long id);
 
     void movedown(Long id);
+
+    void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
 }

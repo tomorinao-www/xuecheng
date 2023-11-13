@@ -2,12 +2,17 @@ package link.tomorinao.xuecheng.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
+import link.tomorinao.xuecheng.base.exception.XueChengException;
 import link.tomorinao.xuecheng.base.utils.BeanUtils;
 import link.tomorinao.xuecheng.content.mapper.TeachplanMapper;
+import link.tomorinao.xuecheng.content.mapper.TeachplanMediaMapper;
+import link.tomorinao.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import link.tomorinao.xuecheng.content.model.dto.TeachplanDto;
 import link.tomorinao.xuecheng.content.model.po.Teachplan;
+import link.tomorinao.xuecheng.content.model.po.TeachplanMedia;
 import link.tomorinao.xuecheng.content.service.ITeachplanService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +30,15 @@ import java.util.List;
 @Service
 public class TeachplanServiceImpl implements ITeachplanService {
 
-    @Resource
     private TeachplanMapper teachplanMapper;
+    private TeachplanMediaMapper teachplanMediaMapper;
+
+    @Autowired
+    public TeachplanServiceImpl(TeachplanMapper teachplanMapper, TeachplanMediaMapper teachplanMediaMapper) {
+        this.teachplanMapper = teachplanMapper;
+        this.teachplanMediaMapper = teachplanMediaMapper;
+    }
+
 
     @Override
     public List<TeachplanDto> getTreeNodes(Long id) {
@@ -74,6 +86,32 @@ public class TeachplanServiceImpl implements ITeachplanService {
         Teachplan po = teachplanMapper.selectById(id);
         Teachplan downpo = teachplanMapper.selectDownOne(po);
         exchangeOrderby(downpo, po);
+    }
+
+    @Override
+    public void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto) {
+        Long teachplanId = bindTeachplanMediaDto.getTeachplanId();
+        Teachplan teachplan = teachplanMapper.selectById(teachplanId);
+        if(teachplan==null){
+            XueChengException.cast("课程章节id不存在！");
+        }
+        if(2!=teachplan.getGrade()){
+            XueChengException.cast("只允许二级小节绑定媒资！");
+        }
+        // 增加或更新
+        TeachplanMedia teachplanMedia = new TeachplanMedia();
+        teachplanMedia.setTeachplanId(bindTeachplanMediaDto.getTeachplanId());
+        teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
+        teachplanMedia.setMediaId(bindTeachplanMediaDto.getMediaId());
+        teachplanMedia.setCourseId(teachplan.getCourseId());
+        LambdaQueryWrapper<TeachplanMedia> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TeachplanMedia::getTeachplanId, teachplanId);
+        TeachplanMedia teachplanMedia_old = teachplanMediaMapper.selectOne(wrapper);
+        if(teachplanMedia_old==null){
+            teachplanMediaMapper.insert(teachplanMedia);
+        }else {
+            teachplanMediaMapper.update(teachplanMedia,wrapper);
+        }
     }
 
     private void exchangeOrderby(Teachplan po1, Teachplan po2) {

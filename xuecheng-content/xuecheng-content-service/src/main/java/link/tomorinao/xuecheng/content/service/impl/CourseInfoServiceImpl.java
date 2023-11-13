@@ -24,8 +24,6 @@ import link.tomorinao.xuecheng.base.utils.BeanUtils;
 public class CourseInfoServiceImpl implements ICourseInfoService {
 
     @Resource
-    ICourseInfoService thisproxy;
-    @Resource
     private CourseInfoMapper courseInfoMapper;
     @Resource
     private CourseCategoryMapper courseCategoryMapper;

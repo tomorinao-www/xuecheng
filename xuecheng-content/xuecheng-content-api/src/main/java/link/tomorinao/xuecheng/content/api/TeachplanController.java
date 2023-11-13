@@ -1,6 +1,7 @@
 package link.tomorinao.xuecheng.content.api;
 
 import jakarta.annotation.Resource;
+import link.tomorinao.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import link.tomorinao.xuecheng.content.model.dto.TeachplanDto;
 import link.tomorinao.xuecheng.content.service.ITeachplanService;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +41,10 @@ public class TeachplanController {
     @PostMapping("/movedown/{id}")
     public void movedown(@PathVariable Long id){
         iTeachplanService.movedown(id);
+    }
+
+    @PostMapping("/association/media")
+    public void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto){
+        iTeachplanService.associationMedia(bindTeachplanMediaDto);
     }
 }

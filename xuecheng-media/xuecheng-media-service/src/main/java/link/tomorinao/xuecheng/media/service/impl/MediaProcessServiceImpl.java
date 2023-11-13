@@ -1,8 +1,12 @@
 package link.tomorinao.xuecheng.media.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import link.tomorinao.xuecheng.base.utils.BeanUtils;
+import link.tomorinao.xuecheng.media.mapper.MediaFilesMapper;
 import link.tomorinao.xuecheng.media.mapper.MediaProcessHistoryMapper;
 import link.tomorinao.xuecheng.media.mapper.MediaProcessMapper;
+import link.tomorinao.xuecheng.media.model.po.MediaFiles;
 import link.tomorinao.xuecheng.media.model.po.MediaProcess;
 import link.tomorinao.xuecheng.media.model.po.MediaProcessHistory;
 import link.tomorinao.xuecheng.media.service.MediaProcessService;
@@ -18,9 +22,12 @@ public class MediaProcessServiceImpl implements MediaProcessService {
     private final MediaProcessMapper mediaProcessMapper;
     private final MediaProcessHistoryMapper mediaProcessHistoryMapper;
 
-    public MediaProcessServiceImpl(MediaProcessMapper mediaProcessMapper, MediaProcessHistoryMapper mediaProcessHistoryMapper) {
+    private final MediaFilesMapper mediaFilesMapper;
+
+    public MediaProcessServiceImpl(MediaProcessMapper mediaProcessMapper, MediaProcessHistoryMapper mediaProcessHistoryMapper, MediaFilesMapper mediaFilesMapper) {
         this.mediaProcessMapper = mediaProcessMapper;
         this.mediaProcessHistoryMapper = mediaProcessHistoryMapper;
+        this.mediaFilesMapper = mediaFilesMapper;
     }
 
     @Override
@@ -64,6 +71,11 @@ public class MediaProcessServiceImpl implements MediaProcessService {
             mediaProcessHistoryMapper.insert(mediaProcessHistory);
             // 同时删除待处理任务表中的数据
             mediaProcessMapper.deleteById(taskId);
+//            // 更新媒资url
+//            MediaFiles mediaFiles = new MediaFiles();
+//            mediaFiles.setId(mediaProcess.getFileId());
+//            mediaFiles.setUrl(url);
+//            mediaFilesMapper.updateById(mediaFiles);
         }
     }
 }

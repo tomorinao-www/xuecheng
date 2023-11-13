@@ -6,6 +6,7 @@ import link.tomorinao.xuecheng.content.mapper.CourseCategoryMapper;
 import link.tomorinao.xuecheng.content.model.dto.CourseCategoryTreeDto;
 import link.tomorinao.xuecheng.content.model.po.CourseCategory;
 import link.tomorinao.xuecheng.content.service.ICourseCategoryService;
+import link.tomorinao.xuecheng.content.service.ICourseInfoService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

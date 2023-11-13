@@ -1,5 +1,7 @@
 #微服务配置
 spring:
+  main:
+    allow-circular-references: true
   config:
     import:
       - nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

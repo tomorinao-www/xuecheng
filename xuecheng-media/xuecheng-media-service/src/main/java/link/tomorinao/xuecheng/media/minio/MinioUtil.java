@@ -3,7 +3,11 @@ package link.tomorinao.xuecheng.media.minio;
 import io.minio.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
+import jakarta.annotation.Resource;
+import link.tomorinao.xuecheng.media.service.MediaFileService;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.scope.refresh.RefreshScopeRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +17,7 @@ import java.io.InputStream;
 import java.util.List;
 
 public class MinioUtil {
+
     private MinioConfig minioConfig;
 
     @Getter
@@ -115,5 +120,21 @@ public class MinioUtil {
                 .object(objectPath)
                 .build());
         return inputStream;
+    }
+
+
+    @NotNull
+    public static String getParentPath(String md5) {
+        return md5.charAt(0) + "/" + md5.charAt(1) + "/" + md5;
+    }
+
+    @NotNull
+    public static String getObjectPath(String md5, String ext) {
+        return getParentPath(md5) + "/" + md5 + "." + ext;
+    }
+
+    @NotNull
+    public static String getChunkPath(String md5, int chunkIndex) {
+        return getParentPath(md5) + "/chunk/" + chunkIndex;
     }
 }

@@ -12,6 +12,7 @@ import link.tomorinao.xuecheng.content.model.po.CourseCategory;
 import link.tomorinao.xuecheng.content.model.po.CourseInfo;
 import link.tomorinao.xuecheng.content.model.po.CourseTeacher;
 import link.tomorinao.xuecheng.content.model.po.Teachplan;
+import link.tomorinao.xuecheng.content.service.ICourseCategoryService;
 import link.tomorinao.xuecheng.content.service.ICourseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ import link.tomorinao.xuecheng.base.utils.BeanUtils;
 @Service
 public class CourseInfoServiceImpl implements ICourseInfoService {
 
+    @Resource
+    ICourseInfoService thisproxy;
     @Resource
     private CourseInfoMapper courseInfoMapper;
     @Resource

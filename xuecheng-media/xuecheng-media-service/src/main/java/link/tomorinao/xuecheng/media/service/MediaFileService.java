@@ -49,4 +49,6 @@ public interface MediaFileService {
     RestResponse<Boolean> uploadChunk(String fileMd5, int chunkIndex, MultipartFile file);
 
     RestResponse<Boolean> mergeChunks(Long companyId, String fileMd5, String fileName, int chunkTotal, String etag);
+
+    MediaFiles file2db(Long companyId, String md5, String filename, String etag, long size, String objectPath, String bucket);
 }

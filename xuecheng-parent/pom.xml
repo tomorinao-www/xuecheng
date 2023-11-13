@@ -24,6 +24,7 @@
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
         <minio.version>8.5.6</minio.version>
         <hutool.version>5.8.22</hutool.version>
+        <fastjson2.version>2.0.38</fastjson2.version>
     </properties>
 
     <packaging>pom</packaging>
@@ -98,6 +99,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

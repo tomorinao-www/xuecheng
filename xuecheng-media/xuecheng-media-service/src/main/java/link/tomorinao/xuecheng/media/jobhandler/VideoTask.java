@@ -125,7 +125,7 @@ public class VideoTask {
                         mp4TempFile.delete();
                     }
                     // 6.转码任务成功记录
-                    String url = bucket + "/" + mp4objectPath;
+                    String url = "/" + bucket + "/" + mp4objectPath;
                     mediaProcessService.saveProcessFinishStatus(tastId, "2", fileId, url, "");
                 } finally {
                     // 7.计数器减一

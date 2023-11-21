@@ -27,7 +27,7 @@ public interface MediaFileService {
     PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
 
-    UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile) throws Exception;
+    UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile, String objectPath) throws Exception;
 
     /**
      * 检查文件是否存在

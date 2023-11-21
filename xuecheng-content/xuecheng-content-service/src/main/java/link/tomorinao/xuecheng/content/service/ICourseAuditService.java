@@ -13,4 +13,5 @@ import link.tomorinao.xuecheng.content.model.po.CourseAudit;
  */
 public interface ICourseAuditService extends IService<CourseAudit> {
 
+    void commitAudit(Long companyId,Long courseId);
 }

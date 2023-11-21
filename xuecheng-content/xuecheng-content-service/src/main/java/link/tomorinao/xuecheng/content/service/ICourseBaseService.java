@@ -2,8 +2,6 @@ package link.tomorinao.xuecheng.content.service;
 
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
-import link.tomorinao.xuecheng.content.model.dto.CourseInfoDto;
-import link.tomorinao.xuecheng.content.model.dto.CourseBaseInfoDto;
 import link.tomorinao.xuecheng.content.model.dto.QueryCourseParamsDto;
 import link.tomorinao.xuecheng.content.model.po.CourseBase;
 

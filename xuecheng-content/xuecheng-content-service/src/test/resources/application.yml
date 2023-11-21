@@ -10,3 +10,16 @@ spring:
     url: jdbc:mysql://localhost:3306/xc_content
     username: "root"
     password: "local"
+
+xxl:
+  job:
+    accessToken: default_token
+    admin:
+      addresses: http://localhost:9020/xxl-job-admin
+    executor:
+      appname: executor-xuecheng-content
+      address:
+      ip:
+      logpath: E:\temp\xuecheng\content\xxl-job\data\applogs
+      logretentiondays: 30
+      port: 49998

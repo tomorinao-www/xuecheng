@@ -1,13 +1,13 @@
 package link.tomorinao.xuecheng.media.service.impl;
 
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.minio.Result;
 import io.minio.StatObjectResponse;
 import io.minio.messages.DeleteError;
-import jakarta.annotation.Resource;
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
 import link.tomorinao.xuecheng.base.model.RestResponse;
@@ -21,6 +21,7 @@ import link.tomorinao.xuecheng.media.model.po.MediaFiles;
 import link.tomorinao.xuecheng.media.model.po.MediaProcess;
 import link.tomorinao.xuecheng.media.service.MediaFileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +83,7 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     @Override
-    public UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile) throws Exception {
+    public UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile, String objectPath) throws Exception {
         // 计算md5
         byte[] bytes = multipartFile.getBytes();
         String md5 = DigestUtil.md5Hex(bytes);
@@ -92,11 +93,18 @@ public class MediaFileServiceImpl implements MediaFileService {
             // 上传文件
             String filename = multipartFile.getOriginalFilename();
             String extName = FileNameUtil.extName(filename);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            String folder = dateFormat.format(new Date());
-            String objectPath = folder + "/" + md5 + "." + extName;
+            if (StrUtil.isEmpty(objectPath)) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                String folder = dateFormat.format(new Date());
+                objectPath = folder + "/" + md5 + "." + extName;
+            }
             String bucket = minioUtil.bucket.getMedia();
-
+            try {
+                StatObjectResponse stat = minioUtil.statObject(objectPath, bucket);
+                minioUtil.remove(objectPath, bucket);
+            } catch (Exception e) {
+                log.debug("minio没有该文件，准备上传{}", objectPath);
+            }
             String url = minioUtil.upload(multipartFile, objectPath, bucket);
             // 写数据库
             long size = multipartFile.getSize();
@@ -223,11 +231,12 @@ public class MediaFileServiceImpl implements MediaFileService {
         po.setUrl("/" + bucket + "/" + objectPath);
         po.setStatus("1");
         po.setAuditStatus("002003");
-        mediaFilesMapper.insert(po);
 
         // 添加转码任务
         String extName = FileNameUtil.extName(fileName);
         if (Objects.equals(extName, "avi")) {
+            // 需要转码，则url先置空，表示转码中
+            po.setUrl(null);
             MediaProcess mediaProcess = new MediaProcess();
             BeanUtils.copyProperties(po, mediaProcess);
             // 我的fileid用来放etag了
@@ -237,6 +246,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaProcess.setFailCount(0);
             mediaProcessMapper.insert(mediaProcess);
         }
+        mediaFilesMapper.insert(po);
         return po;
     }
 

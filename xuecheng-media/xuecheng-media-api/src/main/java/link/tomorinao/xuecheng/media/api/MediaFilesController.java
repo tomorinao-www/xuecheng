@@ -40,9 +40,10 @@ public class MediaFilesController {
     }
 
     @PostMapping("/upload/coursefile")
-    public UploadFileDto uploadCourseFile(MultipartFile filedata) throws Exception {
+    public UploadFileDto uploadCourseFile(MultipartFile filedata,
+                                          @RequestParam(required = false) String objectPath) throws Exception {
         Long companyId = 1232141425L;
-        return mediaFileService.uploadCourseFile(companyId, filedata);
+        return mediaFileService.uploadCourseFile(companyId, filedata, objectPath);
     }
 
 
@@ -66,9 +67,9 @@ public class MediaFilesController {
 
     @PostMapping("/upload/mergechunks")
     public RestResponse<Boolean> mergeChunks(String fileMd5,
-                                    String fileName,
-                                    int chunkTotal,
-                                    String etag){
+                                             String fileName,
+                                             int chunkTotal,
+                                             String etag) {
         Long companyId = 1232141425L;
         return mediaFileService.mergeChunks(companyId, fileMd5, fileName, chunkTotal, etag);
     }

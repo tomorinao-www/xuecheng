@@ -4,7 +4,6 @@ package link.tomorinao.xuecheng.content.api;
 import jakarta.annotation.Resource;
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
-import link.tomorinao.xuecheng.content.model.dto.CourseBaseInfoDto;
 import link.tomorinao.xuecheng.content.model.dto.QueryCourseParamsDto;
 import link.tomorinao.xuecheng.content.model.po.CourseBase;
 import link.tomorinao.xuecheng.content.service.ICourseBaseService;

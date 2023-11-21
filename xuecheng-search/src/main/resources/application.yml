@@ -1,0 +1,25 @@
+
+spring:
+  config:
+    import:
+      - nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - nacos:log-${spring.profiles.active}.yaml
+  application:
+    name: search
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: dev
+        group: xuecheng
+      config:
+        namespace: dev
+        group: xuecheng
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: log-${spring.profiles.active}.yaml
+            group: xuecheng
+            refresh: true
+  profiles:
+    active: dev

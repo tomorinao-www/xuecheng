@@ -39,11 +39,10 @@ public class ElasticsearchConfig {
 
 
     @Bean
-    public ElasticsearchClient elasticsearchClient(){
+    public ElasticsearchClient esClient(){
         // URL and API key
         String serverUrl = "http://localhost:9200";
         String apiKey = "VnVhQ2ZHY0JDZGJrU...";
-
         // Create the low-level client
         List<String> serverUrlList = new ArrayList<>();
         serverUrlList.add("http://localhost:9200");
@@ -56,7 +55,6 @@ public class ElasticsearchConfig {
                 //                        new BasicHeader("Authorization", "ApiKey " + apiKey)
                 //                })
                 .build();
-
         // Create the transport with a Jackson mapper
         JacksonJsonpMapper jsonpMapper = new JacksonJsonpMapper();
         // 重要！这里不注册时间模块，会报错，找了好久问题

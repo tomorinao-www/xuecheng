@@ -2,6 +2,8 @@ package link.tomorinao.xuecheng.search;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 public class ElasticSearchTest {
@@ -58,7 +61,7 @@ public class ElasticSearchTest {
 
     @Test
     void get_index() throws IOException {
-        GetIndexResponse createIndexResponse = esClient.indices().get(e->e.index("products"));
+        GetIndexResponse createIndexResponse = esClient.indices().get(e -> e.index("products"));
         System.out.println(String.join(",", createIndexResponse.result().keySet()));
 
     }
@@ -74,12 +77,21 @@ public class ElasticSearchTest {
         );
         System.out.println(response);
     }
+
+    @Test
+    void searchAll() throws IOException {
+        SearchResponse<Product> esres = esClient.search(s -> s
+                        .index("products"),
+                Product.class);
+        List<Product> productList = esres.hits().hits().stream().map(Hit::source).toList();
+        System.out.println(productList);
+    }
 }
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class Product{
+class Product {
     Long id;
     String name;
     Double price;

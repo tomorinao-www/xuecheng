@@ -21,6 +21,8 @@ https://www.bilibili.com/video/BV1j8411N7Bm
 使用apifox 公开文档
 https://xuecheng-tomorinao.apifox.cn
 
+使用elastic search8.11.1
+
 ## 内容管理模块
 
 ### 合并了course_base表与course_market表为course_info表。
@@ -235,3 +237,52 @@ const etag = await calcEtag()
 
 正好黑马有个file_id字段和主键md5hex重复，用它存etag。
 原始字段varchar(32)不够用，改成varchar(36)
+
+### 升级: 使用es8.11新java-api客户端
+
+新版官方文档
+https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/current/getting-started-java.html
+
+参考博客
+- https://blog.csdn.net/weixin_43407520/article/details/127351598
+- https://blog.csdn.net/anjiongyi/article/details/123328856
+
+新版官方文档少得可怜，全靠大家自己摸索，看源码doc
+
+注意，如果属性中有日期时间，还需要在创建es客户端时注册时间模块
+
+新版es默认开启安全认证，使用环境变量禁用安全认证
+xpack.security.enabled: false
+
+```java
+@Configuration
+public class ElasticsearchConfig {
+    @Bean
+    public ElasticsearchClient esClient() {
+        // URL and API key
+        String serverUrl = "http://localhost:9200";
+        String apiKey = "VnVhQ2ZHY0JDZGJrU...";
+        // Create the low-level client
+        List<String> serverUrlList = new ArrayList<>();
+        serverUrlList.add("http://localhost:9200");
+
+        List<HttpHost> httpHostList = serverUrlList.stream().map(HttpHost::create).toList();
+        HttpHost[] httpHostArray = ArrayUtil.toArray(httpHostList, HttpHost.class);
+
+        RestClient restClient = RestClient.builder(httpHostArray)
+                //                .setDefaultHeaders(new Header[]{
+                //                        new BasicHeader("Authorization", "ApiKey " + apiKey)
+                //                })
+                .build();
+        // Create the transport with a Jackson mapper
+        JacksonJsonpMapper jsonpMapper = new JacksonJsonpMapper();
+        // 重要！这里不注册时间模块，会报错，找了好久问题
+        jsonpMapper.objectMapper().registerModule(new JavaTimeModule());
+        ElasticsearchTransport transport = new RestClientTransport(restClient, jsonpMapper);
+
+        // And create the API client
+        ElasticsearchClient elasticsearchClient = new ElasticsearchClient(transport);
+        return elasticsearchClient;
+    }
+}
+```

@@ -286,3 +286,38 @@ public class ElasticsearchConfig {
     }
 }
 ```
+
+## 认证授权模块
+
+### 升级：使用spring security 6和spring-authorization-server
+
+感谢如下项目提供的参考：
+- [authorization-example](https://gitee.com/vains-Sofia/authorization-example)
+- [youlai-mall](https://gitee.com/youlaitech/youlai-mall)
+
+spring boot 3已经升级使用spring security 6
+
+Spring Security OAuth项目已经终止维护，官方文档移除，项目移入历史仓库
+相应的spring-cloud-security也停止维护
+
+新的认证服务使用[spring-authorization-server](https://spring.io/projects/spring-authorization-server/)
+[文档](https://docs.spring.io/spring-authorization-server/reference/getting-started.html)
+
+资源服务使用spring-oauth2-resource-server
+[文档](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)
+
+## 扩展密码模式认证
+
+Spring Authorization Server默认不支持密码模式认证，需要自己扩展
+
+参考[Spring Authorization Server 1.1 扩展实现 OAuth2 密码模式与 Spring Cloud 的整合实战](https://youlai.blog.csdn.net/article/details/134024381)
+
+关键是实现三个类
+`PasswordAuthenticationConverter`
+`PasswordAuthenticationToken`
+`PasswordAuthenticationProvider`
+
+其中用到的两个工具类
+`OAuth2AuthenticationProviderUtils`
+`OAuth2EndpointUtils`
+是从框架源码里完全拷贝出来的，因为原工具类方法没有public修饰，不能导入过来用，只能拷贝出来...

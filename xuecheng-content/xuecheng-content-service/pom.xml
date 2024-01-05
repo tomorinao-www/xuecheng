@@ -94,5 +94,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+
+        <!--        资源服务-->
+        <dependency>
+            <groupId>link.tomorinao.xuecheng</groupId>
+            <artifactId>xuecheng-security</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

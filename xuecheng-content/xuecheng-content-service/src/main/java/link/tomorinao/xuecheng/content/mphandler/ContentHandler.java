@@ -27,6 +27,6 @@ public class ContentHandler extends DateTimeHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-
+        super.updateFill(metaObject);
     }
 }

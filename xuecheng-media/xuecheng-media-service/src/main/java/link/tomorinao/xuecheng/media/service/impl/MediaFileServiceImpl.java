@@ -82,6 +82,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         return mediaListResult;
     }
 
+    @Transactional
     @Override
     public UploadFileDto uploadCourseFile(Long companyId, MultipartFile multipartFile, String objectPath) throws Exception {
         // 计算md5

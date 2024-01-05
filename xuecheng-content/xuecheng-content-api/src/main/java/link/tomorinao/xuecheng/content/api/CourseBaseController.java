@@ -4,6 +4,7 @@ package link.tomorinao.xuecheng.content.api;
 import jakarta.annotation.Resource;
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
+import link.tomorinao.xuecheng.common.security.utils.SecurityUtil;
 import link.tomorinao.xuecheng.content.model.dto.QueryCourseParamsDto;
 import link.tomorinao.xuecheng.content.model.po.CourseBase;
 import link.tomorinao.xuecheng.content.service.ICourseBaseService;
@@ -20,6 +21,7 @@ public class CourseBaseController {
     public PageResult<CourseBase> list(PageParams pageParams,
                                        @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto) {
         PageResult<CourseBase> pageRes = iCourseBaseService.list(pageParams, queryCourseParamsDto);
+        System.out.println("SecurityUtil.getUser() = " + SecurityUtil.getUser());
         return pageRes;
     }
 //    @PostMapping

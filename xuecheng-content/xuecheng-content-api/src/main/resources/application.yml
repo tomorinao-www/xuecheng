@@ -36,4 +36,4 @@ spring:
         jwt:
           # Jwt中claims的iss属性，也就是jwt的签发地址，即认证服务器的根路径
           # 资源服务器会进一步的配置，通过该地址获取公钥以解析jwt
-          issuer-uri: http://localhost:63070/auth
+          issuer-uri: http://localhost:8160/auth

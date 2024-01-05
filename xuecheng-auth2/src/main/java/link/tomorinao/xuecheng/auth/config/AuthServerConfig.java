@@ -38,10 +38,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.*;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -66,6 +63,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -83,6 +81,17 @@ public class AuthServerConfig {
             OAuth2TokenGenerator<?> tokenGenerator,
             CorsFilter corsFilter)
             throws Exception {
+//        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+//                new OAuth2AuthorizationServerConfigurer();
+//        http.apply(authorizationServerConfigurer);
+//
+//
+//        authorizationServerConfigurer
+//                .authorizationServerMetadataEndpoint(authorizationServerMetadataEndpoint ->
+//                        authorizationServerMetadataEndpoint
+//                                .authorizationServerMetadataCustomizer(authorizationServerMetadataCustomizer->
+//                                        authorizationServerConfigurer
+//                                                .));
         // 禁用csrf与cors
         http.csrf((csrf) -> csrf.disable());
         http.cors((cors) -> cors.disable());

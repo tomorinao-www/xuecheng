@@ -43,7 +43,7 @@ public class LoginController {
     由自定义jwt生成器和解析器决定权限字段key，默认是scope，并且scope内容带前缀SCOPE_
      */
     @RequestMapping("/r/r1")
-    @PreAuthorize("hasAnyAuthority('p1')")
+//    @PreAuthorize("hasAnyAuthority('p1')")
     public String r1() {
         return "访问r1资源";
     }

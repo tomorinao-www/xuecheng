@@ -308,7 +308,7 @@ Spring Security OAuth项目已经终止维护，官方文档移除，项目移�
 
 ## 扩展密码模式认证
 
-Spring Authorization Server默认不支持密码模式认证，需要自己扩展
+oauth2.1协议不支持密码模式认证，需要自己扩展
 
 参考[Spring Authorization Server 1.1 扩展实现 OAuth2 密码模式与 Spring Cloud 的整合实战](https://youlai.blog.csdn.net/article/details/134024381)
 

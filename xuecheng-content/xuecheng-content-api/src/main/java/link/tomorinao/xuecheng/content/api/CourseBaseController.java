@@ -8,6 +8,7 @@ import link.tomorinao.xuecheng.common.security.utils.SecurityUtil;
 import link.tomorinao.xuecheng.content.model.dto.QueryCourseParamsDto;
 import link.tomorinao.xuecheng.content.model.po.CourseBase;
 import link.tomorinao.xuecheng.content.service.ICourseBaseService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,6 +19,7 @@ public class CourseBaseController {
     ICourseBaseService iCourseBaseService;
 
     @PostMapping("/list")
+    @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
     public PageResult<CourseBase> list(PageParams pageParams,
                                        @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto) {
         PageResult<CourseBase> pageRes = iCourseBaseService.list(pageParams, queryCourseParamsDto);

@@ -39,8 +39,12 @@ public class GlobalExceptionHandler {
     public RestErrorResponse exception(Exception e) {
         // 日志
         log.error("系统异常: {}", e.getMessage(), e);
+        // 权限不足异常转换
+        if ("Access Denied".equals(e.getMessage())) {
+            return new RestErrorResponse("您没有权限操作此功能");
+        }
         // 返回异常信息
-        RestErrorResponse restErrorResponse = new RestErrorResponse(CommonError.UNKOWN_ERROR.getErrMessage());
+        RestErrorResponse restErrorResponse = new RestErrorResponse(e.getMessage());
         return restErrorResponse;
     }
 
@@ -51,7 +55,7 @@ public class GlobalExceptionHandler {
 
         BindingResult bindingResult = e.getBindingResult();
         ArrayList<String> msgList = new ArrayList<>();
-        bindingResult.getFieldErrors().stream().forEach(item -> {
+        bindingResult.getFieldErrors().forEach(item -> {
             msgList.add(item.getDefaultMessage());
         });
         String errMessage = StringUtils.join(msgList);

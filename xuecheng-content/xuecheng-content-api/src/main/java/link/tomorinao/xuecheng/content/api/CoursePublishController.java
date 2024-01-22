@@ -2,6 +2,7 @@ package link.tomorinao.xuecheng.content.api;
 
 
 import link.tomorinao.xuecheng.content.model.dto.CoursePreviewDto;
+import link.tomorinao.xuecheng.content.model.po.CoursePublish;
 import link.tomorinao.xuecheng.content.service.ICoursePublishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,5 +28,11 @@ public class CoursePublishController {
     @ResponseBody
     public void coursePublish(@PathVariable Long courseId) {
         iCoursePublishService.publishCourse(1232141425L, courseId);
+    }
+
+    @GetMapping("/r/coursepublish/{courseId}")
+    @ResponseBody
+    public CoursePublish getCoursePublish(@PathVariable Long courseId){
+        return iCoursePublishService.getById(courseId);
     }
 }

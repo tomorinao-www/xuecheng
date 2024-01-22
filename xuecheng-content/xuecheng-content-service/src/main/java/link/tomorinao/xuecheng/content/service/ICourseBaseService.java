@@ -15,7 +15,7 @@ import link.tomorinao.xuecheng.content.model.po.CourseBase;
  */
 public interface ICourseBaseService{
 
-    PageResult<CourseBase> list(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
+    PageResult<CourseBase> list(Long companyId, PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
 
 //    CourseBaseInfoDto add(Long companyId, CourseInfoDto dto);
 //

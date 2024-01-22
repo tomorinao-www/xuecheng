@@ -20,7 +20,7 @@ spring:
         refresh-enabled: true
         shared-configs:
           - data-id: log-${spring.profiles.active}.yaml
-            group: xuecheng-plus-common
+            group: xuecheng
             refresh: true
 
   profiles:

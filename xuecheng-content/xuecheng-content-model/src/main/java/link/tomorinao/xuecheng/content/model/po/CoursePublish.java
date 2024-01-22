@@ -143,7 +143,7 @@ public class CoursePublish implements Serializable {
     /**
      * 现价
      */
-    private Double price;
+    private Float price;
 
     /**
      * 原价
@@ -347,11 +347,11 @@ public class CoursePublish implements Serializable {
         this.charge = charge;
     }
 
-    public Double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

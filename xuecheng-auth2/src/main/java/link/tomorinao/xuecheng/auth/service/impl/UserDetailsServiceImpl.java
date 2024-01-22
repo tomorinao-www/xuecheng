@@ -2,9 +2,11 @@ package link.tomorinao.xuecheng.auth.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import link.tomorinao.xuecheng.auth.mapper.XcMenuMapper;
 import link.tomorinao.xuecheng.auth.mapper.XcUserMapper;
 import link.tomorinao.xuecheng.auth.model.dto.AuthParamsDto;
 import link.tomorinao.xuecheng.auth.model.dto.XcUserExt;
+import link.tomorinao.xuecheng.auth.model.po.XcMenu;
 import link.tomorinao.xuecheng.auth.model.po.XcUser;
 import link.tomorinao.xuecheng.auth.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +19,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
-    @Autowired
-    private XcUserMapper xcUserMapper;
+
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private XcMenuMapper xcMenuMapper;
 
     /**
      * @param name 用户输入的登录账号
@@ -55,7 +62,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 敏感信息不放
 //        user.setPassword(null);
         String userJSON = JSON.toJSONString(user);
+        List<XcMenu> xcMenus = xcMenuMapper.selectPermissionByUserId(user.getId());
+
+        ArrayList<String> permissions = new ArrayList<>();
+        // 没权限，给一个默认的
+        if (xcMenus.isEmpty()) {
+            permissions.add("test");
+        } else {
+            // 获取权限，加入到集合里
+            xcMenus.forEach(xcMenu -> {
+                permissions.add(xcMenu.getCode());
+            });
+        }
+        // 设置权限
+        user.setPermissions(permissions);
+        String[] aurorities = permissions.toArray(new String[0]);
         //如果查到了用户拿到正确的密码，最终封装成一个UserDetails对象给spring security框架返回，由框架进行密码比对
-        return User.withUsername(userJSON).password(password).authorities("test").build();
+        return User.withUsername(userJSON).password(password).authorities(aurorities).build();
     }
 }

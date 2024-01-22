@@ -15,7 +15,10 @@
         <module>../xuecheng-search</module>
         <module>../xuecheng-auth2</module>
         <module>../xuecheng-checkcode</module>
+        <module>../xuecheng-learning</module>
         <module>../xuecheng-common</module>
+        <module>../xuecheng-base</module>
+        <module>../xuecheng-message-sdk</module>
     </modules>
     <properties>
         <java.version>17</java.version>

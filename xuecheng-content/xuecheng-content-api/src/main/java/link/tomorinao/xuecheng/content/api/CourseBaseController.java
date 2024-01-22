@@ -1,6 +1,7 @@
 package link.tomorinao.xuecheng.content.api;
 
 
+import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
 import link.tomorinao.xuecheng.base.model.PageParams;
 import link.tomorinao.xuecheng.base.model.PageResult;
@@ -22,7 +23,13 @@ public class CourseBaseController {
     @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
     public PageResult<CourseBase> list(PageParams pageParams,
                                        @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto) {
-        PageResult<CourseBase> pageRes = iCourseBaseService.list(pageParams, queryCourseParamsDto);
+
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        Long companyId = null;
+        if (StrUtil.isNotEmpty(user.getCompanyId())) {
+            companyId = Long.valueOf(user.getCompanyId());
+        }
+        PageResult<CourseBase> pageRes = iCourseBaseService.list(companyId,pageParams, queryCourseParamsDto);
         System.out.println("SecurityUtil.getUser() = " + SecurityUtil.getUser());
         return pageRes;
     }

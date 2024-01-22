@@ -26,7 +26,7 @@ public class ResourceServerConfig {
 //        http.cors((cors) -> cors.disable());
         http
                 .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/r/**", "/home").authenticated()
+                        .requestMatchers("/r/**", "/open/**").permitAll()
                         .anyRequest().authenticated()
                 )
         ;

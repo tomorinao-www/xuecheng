@@ -222,7 +222,7 @@ public class AuthServerConfig {
 //                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .tokenSettings(TokenSettings.builder()
                         .authorizationCodeTimeToLive(Duration.ofMinutes(9))
-                        .accessTokenTimeToLive(Duration.ofHours(2))
+                        .accessTokenTimeToLive(Duration.ofDays(1))
                         .refreshTokenTimeToLive(Duration.ofDays(3))
                         .build())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())

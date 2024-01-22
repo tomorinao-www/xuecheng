@@ -38,7 +38,7 @@ public class CourseBaseServiceImpl implements ICourseBaseService {
 
 
     @Override
-    public PageResult<CourseBase> list(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResult<CourseBase> list(Long companyId, PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
         Long pageNo = pageParams.getPageNo();
         Long pageSize = pageParams.getPageSize();
         Page<CourseBase> page = new Page<>(pageNo, pageSize);
@@ -50,6 +50,7 @@ public class CourseBaseServiceImpl implements ICourseBaseService {
         wrapper.like(StringUtils.isNotEmpty(courseName), CourseBase::getName, courseName);
         wrapper.eq(StringUtils.isNotEmpty(auditStatus), CourseBase::getAuditStatus, auditStatus);
         wrapper.eq(StringUtils.isNotEmpty(publishStatus), CourseBase::getStatus, publishStatus);
+        wrapper.eq(CourseBase::getCompanyId, companyId);
 
         Page<CourseBase> selectedPage = courseBaseMapper.selectPage(page, wrapper);
         List<CourseBase> records = selectedPage.getRecords();

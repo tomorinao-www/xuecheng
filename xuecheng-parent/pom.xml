@@ -19,6 +19,7 @@
         <module>../xuecheng-common</module>
         <module>../xuecheng-base</module>
         <module>../xuecheng-message-sdk</module>
+        <module>../xuecheng-orders</module>
     </modules>
     <properties>
         <java.version>17</java.version>

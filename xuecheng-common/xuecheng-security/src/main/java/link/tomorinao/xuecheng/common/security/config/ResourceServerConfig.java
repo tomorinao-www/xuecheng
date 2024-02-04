@@ -27,7 +27,7 @@ public class ResourceServerConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/r/**", "/open/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
         ;
         http

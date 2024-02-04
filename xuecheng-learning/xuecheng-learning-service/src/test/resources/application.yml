@@ -1,0 +1,37 @@
+
+#微服务配置
+spring:
+  application:
+    name: learning-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: dev
+        group: xuecheng
+      config:
+        namespace: dev
+        group: xuecheng
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: learning-service-${spring.profiles.active}.yaml
+            group: xuecheng
+            refresh: true
+        shared-configs:
+          - data-id: log-${spring.profiles.active}.yaml
+            group: xuecheng
+            refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: xuecheng
+            refresh: true
+
+  profiles:
+    active: dev
+  config:
+    import:
+      - nacos:learning-api-${spring.profiles.active}.yaml
+      - nacos:learning-service-${spring.profiles.active}.yaml
+      - nacos:log-${spring.profiles.active}.yaml
+      - nacos:feign-${spring.profiles.active}.yaml
+
